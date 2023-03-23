@@ -109,7 +109,7 @@ func GetBook(c *fiber.Ctx) error {
 // @Success 200 {object} models.Book
 // @Security ApiKeyAuth
 // @Router /v1/book [post]
-func CreateBook(c fiber.Ctx) error {
+func CreateBook(c *fiber.Ctx) error {
 	// Get now time.
 	now := time.Now().Unix()
 
