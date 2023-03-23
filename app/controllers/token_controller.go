@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"books-api/app/utils"
+	"books-api/app/pkg/utils"
 
 	"github.com/gofiber/fiber/v2"
 )

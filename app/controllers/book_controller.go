@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"books-api/app/models"
+	"books-api/app/pkg/utils"
 	"books-api/app/platform/database"
-	"books-api/app/utils"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
