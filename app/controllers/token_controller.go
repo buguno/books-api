@@ -1,6 +1,10 @@
 package controllers
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"books-api/app/utils"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 // GetNewAccessToken method for create a new access token.
 // @Description Create a new access token.

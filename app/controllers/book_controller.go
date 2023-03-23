@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"books-api/app/models"
+	"books-api/app/platform/database"
 	"books-api/app/utils"
 	"time"
 
@@ -215,7 +216,7 @@ func UpdateBook(c *fiber.Ctx) error {
 	if err != nil {
 		// Return status 500 and JWT parse error.
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": true,
+			"error":   true,
 			"message": err.Error(),
 		})
 	}
@@ -224,13 +225,13 @@ func UpdateBook(c *fiber.Ctx) error {
 	expires := claims.Expires
 
 	// Checking, if now time greather than expiration from JWT.
-    if now > expires {
-        // Return status 401 and unauthorized error message.
-        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-            "error": true,
-            "message":   "unauthorized, check expiration time of your token",
-        })
-    }
+	if now > expires {
+		// Return status 401 and unauthorized error message.
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error":   true,
+			"message": "unauthorized, check expiration time of your token",
+		})
+	}
 
 	// Create now Book struct.
 	book := &models.Book{}
@@ -239,7 +240,7 @@ func UpdateBook(c *fiber.Ctx) error {
 	if err := c.BodyParser(book); err != nil {
 		// Return status 400 and error message.
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": true,
+			"error":   true,
 			"message": err.Error(),
 		})
 	}
@@ -249,7 +250,7 @@ func UpdateBook(c *fiber.Ctx) error {
 	if err != nil {
 		// Return status 500 and database connection error.
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": true,
+			"error":   true,
 			"message": err.Error(),
 		})
 	}
@@ -259,7 +260,7 @@ func UpdateBook(c *fiber.Ctx) error {
 	if err != nil {
 		// Return status 404 and book not found error.
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": true,
+			"error":   true,
 			"message": "book with this ID not found",
 		})
 	}
@@ -274,16 +275,16 @@ func UpdateBook(c *fiber.Ctx) error {
 	if err := validate.Struct(book); err != nil {
 		// Return, if some fields are not valid.
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": true,
-			"message":   utils.ValidatorErrors(err),
+			"error":   true,
+			"message": utils.ValidatorErrors(err),
 		})
 	}
 
 	// Update book by given ID.
-	if err := db.UpdateBook(foundedBook.ID, book): err != nil {
+	if err := db.UpdateBook(foundedBook.ID, book); err != nil {
 		// Return status 500 and error message.
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": true,
+			"error":   true,
 			"message": err.Error(),
 		})
 	}
@@ -304,83 +305,83 @@ func UpdateBook(c *fiber.Ctx) error {
 // @Router /v1/book [delete]
 func DeleteBook(c *fiber.Ctx) error {
 	// Get now time.
-    now := time.Now().Unix()
+	now := time.Now().Unix()
 
 	// Get claims from JWT.
-    claims, err := utils.ExtractTokenMetadata(c)
-    if err != nil {
-        // Return status 500 and JWT parse error.
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": true,
-            "message":   err.Error(),
-        })
-    }
+	claims, err := utils.ExtractTokenMetadata(c)
+	if err != nil {
+		// Return status 500 and JWT parse error.
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
 
 	// Set expiration time from JWT data of current book.
-    expires := claims.Expires
+	expires := claims.Expires
 
-    // Checking, if now time greather than expiration from JWT.
-    if now > expires {
-        // Return status 401 and unauthorized error message.
-        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-            "error": true,
-            "message":   "unauthorized, check expiration time of your token",
-        })
-    }
+	// Checking, if now time greather than expiration from JWT.
+	if now > expires {
+		// Return status 401 and unauthorized error message.
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error":   true,
+			"message": "unauthorized, check expiration time of your token",
+		})
+	}
 
 	// Create new Book struct
-    book := &models.Book{}
+	book := &models.Book{}
 
-    // Check, if received JSON data is valid.
-    if err := c.BodyParser(book); err != nil {
-        // Return status 400 and error message.
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": true,
-            "message":   err.Error(),
-        })
-    }
+	// Check, if received JSON data is valid.
+	if err := c.BodyParser(book); err != nil {
+		// Return status 400 and error message.
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
 
 	// Create a new validator for a Book model.
-    validate := utils.NewValidator()
+	validate := utils.NewValidator()
 
-    // Validate only one book field ID.
-    if err := validate.StructPartial(book, "id"); err != nil {
-        // Return, if some fields are not valid.
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": true,
-            "message":   utils.ValidatorErrors(err),
-        })
-    }
+	// Validate only one book field ID.
+	if err := validate.StructPartial(book, "id"); err != nil {
+		// Return, if some fields are not valid.
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": utils.ValidatorErrors(err),
+		})
+	}
 
 	// Create database connection.
-    db, err := database.OpenDBConnection()
-    if err != nil {
-        // Return status 500 and database connection error.
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": true,
-            "message":   err.Error(),
-        })
-    }
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		// Return status 500 and database connection error.
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
 
 	// Checking, if book with given ID is exists.
-    foundedBook, err := db.GetBook(book.ID)
-    if err != nil {
-        // Return status 404 and book not found error.
-        return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-            "error": true,
-            "message":   "book with this ID not found",
-        })
-    }
+	foundedBook, err := db.GetBook(book.ID)
+	if err != nil {
+		// Return status 404 and book not found error.
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error":   true,
+			"message": "book with this ID not found",
+		})
+	}
 
 	// Delete book by given ID.
-    if err := db.DeleteBook(foundedBook.ID); err != nil {
-        // Return status 500 and error message.
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": true,
-            "message":   err.Error(),
-        })
-    }
+	if err := db.DeleteBook(foundedBook.ID); err != nil {
+		// Return status 500 and error message.
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
 
 	// Return status 204 no content.
-    return c.SendStatus(fiber.StatusNoContent)
+	return c.SendStatus(fiber.StatusNoContent)
 }
