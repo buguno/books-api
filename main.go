@@ -1,15 +1,30 @@
 package main
 
 import (
+	"books-api/app/pkg/configs"
+	"books-api/app/pkg/middleware"
+	"books-api/app/pkg/routes"
+	"books-api/app/pkg/utils"
+
 	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
-	app := fiber.New()
+	// Define Fiber config.
+	config := configs.FiberConfig()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.JSON(&fiber.Map{"data": "Hello from Fiber"})
-	})
+	// Define a new Fiber app with config.
+	app := fiber.New(config)
 
-	app.Listen(":3000")
+	// Middlewares.
+	middleware.FiberMiddleware(app) // Register Fiber's middleware for app.
+
+	// Routes.
+	routes.SwaggerRouter(app)  // Register a route for API Docs (Swagger).
+	routes.PublicRoutes(app)   // Register a public routes for app.
+	routes.PrivateRoutes(app)  // Register a private routes for app.
+	routes.NotFoundRouter(app) // Register route for 404 Error.
+
+	// Start server (with graceful shutdown).
+	utils.StartServerWithGracefulShutdown(app)
 }
