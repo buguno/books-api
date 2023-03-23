@@ -2,7 +2,7 @@ package routes
 
 import (
 	"books-api/app/controllers"
-	"books-api/app/pkg/middleware"
+	"books-api/pkg/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )

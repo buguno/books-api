@@ -1,10 +1,10 @@
 package main
 
 import (
-	"books-api/app/pkg/configs"
-	"books-api/app/pkg/middleware"
-	"books-api/app/pkg/routes"
-	"books-api/app/pkg/utils"
+	"books-api/pkg/configs"
+	"books-api/pkg/middleware"
+	"books-api/pkg/routes"
+	"books-api/pkg/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
