@@ -8,9 +8,23 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
+	_ "books-api/docs" // load API Docs files (Swagger)
+
 	_ "github.com/joho/godotenv/autoload" // load .env file automatically
 )
 
+// @title Books API
+// @version 1.0
+// @description This is an auto-generated API Docs.
+// @termsOfService http://swagger.io/terms/
+// @contact.name API Support
+// @contact.email your@mail.com
+// @license.name MIT License
+// @license.url https://mit-license.org/
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+// @BasePath /api
 func main() {
 	// Define Fiber config.
 	config := configs.FiberConfig()
